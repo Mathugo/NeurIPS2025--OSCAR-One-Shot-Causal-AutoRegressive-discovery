@@ -27,8 +27,8 @@ Depending on your pretrained Transformer $\text{Tf}_x, \text{Tf}_y$ you might ne
 
 ### Reuse the data from the paper
 
-If you want to reuse the data, a parquet files containing 46,000 sequences of error codes are given under: *data/ds_test.parquet*
-Which contains already tokenised and encoded events and labels. The ground truth Markov Boundary for each label (0 to 268) is given in 
+If you want to reuse the data, a parquet files containing 300,000 sequences of error codes are given under: *data/ds_test.parquet*
+Which contains already tokenised and encoded events and labels. The ground truth Markov Boundary for each label (0 to 474) is given in 
 *data/mb_labels.json*.
 
 ### Preparing Your Data 
@@ -162,7 +162,7 @@ def OSCAR(tfe: nn.Module, tfy: nn.Module, batch: dict[str, torch.Tensor], c: int
 ## Evaluation
 
 ### Vehicular Event Dataset
-OSCAR was evaluated on a test dataset of diagnostic trouble codes (as $X$) leading to failures of vehicles, namely error pattern(s) (as $Y_j$). It is composed of about 8710 different diagnostic trouble codes and 268 error patterns. The dataset is characterised by a long-tail problem for the error pattern, such that the labels are highly imbalanced.
+OSCAR was evaluated on a test dataset of diagnostic trouble codes (as $X$) leading to failures of vehicles, namely error pattern(s) (as $Y_j$). It is composed of about 29,100 different diagnostic trouble codes and 474 error patterns. The dataset is characterised by a long-tail problem for the error pattern, such that the labels are highly imbalanced.
 
 We reused the two pretrained Transformers $\text{Tf}_x$: *CarFormer* and $\text{Tf}_y$: *EPredictor* [[1]](https://arxiv.org/pdf/2412.13041) to perform the CI-tests on this dataset.
 The evaluation of the different experiments is given under *eval.py*. 
@@ -171,12 +171,12 @@ The evaluation of the different experiments is given under *eval.py*.
 The one-shot results on the Markov Boundary of each label (error pattern) are given here: 
 | **Algorithm** | **Precision ↑**  | **Recall ↑**     | **F1 ↑**         | **Running Time (min) ↓** |
 | ------------- | ---------------- | ---------------- | ---------------- | ------------------------ |
-| IAMB          | -                | -                | -                | >1440                    |
-| CMB           | -                | -                | -                | >1440                    |
-| MB-By-MB      | -                | -                | -                | >1440                    |
-| PCDbyPCD      | -                | -                | -                | >1440                    |
-| MI-MCF        | -                | -                | -                | >1440                    |
-| **OSCAR**     | **39.49 ± 1.77** | **26.30 ± 0.89** | **29.01 ± 1.17** | **1.26**                 |
+| IAMB          | -                | -                | -                | >4320                    |
+| CMB           | -                | -                | -                | >4320                    |
+| MB-By-MB      | -                | -                | -                | >4320                    |
+| PCDbyPCD      | -                | -                | -                | >4320                    |
+| MI-MCF        | -                | -                | -                | >4320                    |
+| **OSCAR**     | **55.26 ± 1.42** | **31.37 ± 0.82** | **40.02 ± 1.03** | **11.7**                 |
 
 Standard multi-label causal discovery methods are not well adapted to high-dimensional event sequences, as they cannot solve in a reasonable amount of time.
 Moreover, it is easier to provide explanation for an operator per-sample on unobserved data (one-shot) rather than solving the complete causal discovery problem across all the observational data (especially when having a lot of # event types and labels). Results might appear poor, however, error patterns (labels) are imbalanced and getting refined over time by a domain expert, making it more difficult to extract the correct Markov Boundary, especially in a one-shot manner.
